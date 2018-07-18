@@ -1,5 +1,5 @@
 from tkinter import *
-
+from validator import Validator
 
 class Gui:
     def __init__(self, master):
@@ -15,7 +15,8 @@ class Gui:
 
         # controls
         self.labelUrl = Label(self.controlFrame, text="URL:")
-        self.entryUrl = Entry(self.controlFrame, justify=LEFT)
+        prefix = StringVar(self.controlFrame, value="https://")
+        self.entryUrl = Entry(self.controlFrame, textvariable=prefix, justify=LEFT)
         self.buttonRun = Button(self.controlFrame, text="Run", command=self.run)
         self.outputText = Text(self.outputFrame, wrap=WORD)
 
@@ -30,9 +31,15 @@ class Gui:
         self.outputText.pack(side=TOP, expand=True, fill=BOTH)
 
     def run(self):
-        print("DO SOMETHING")
         self.outputText.delete(1.0, END)
-        pass
+
+        url = self.entryUrl.get()
+        if not Validator.isurlcorrect(url):
+            # error
+            print("error")
+            return
+
+        print("valid")
 
 
 root = Tk()
