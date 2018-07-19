@@ -1,5 +1,9 @@
 from tkinter import *
+from tkinter.scrolledtext import ScrolledText
 from validator import Validator
+from requester import Requester
+from datetime import datetime
+
 
 class Gui:
     def __init__(self, master):
@@ -15,10 +19,10 @@ class Gui:
 
         # controls
         self.labelUrl = Label(self.controlFrame, text="URL:")
-        prefix = StringVar(self.controlFrame, value="https://")
-        self.entryUrl = Entry(self.controlFrame, textvariable=prefix, justify=LEFT)
+        defaulturl = StringVar(self.controlFrame, value="https://google.com")
+        self.entryUrl = Entry(self.controlFrame, textvariable=defaulturl, justify=LEFT)
         self.buttonRun = Button(self.controlFrame, text="Run", command=self.run)
-        self.outputText = Text(self.outputFrame, wrap=WORD)
+        self.outputText = ScrolledText(self.outputFrame, wrap=WORD)
 
         # frames layout
         self.controlFrame.pack(side=TOP, fill=X)
@@ -31,15 +35,32 @@ class Gui:
         self.outputText.pack(side=TOP, expand=True, fill=BOTH)
 
     def run(self):
-        self.outputText.delete(1.0, END)
+        self.clearOutput()
+        self.showDateTimeInOutput()
 
         url = self.entryUrl.get()
         if not Validator.isurlcorrect(url):
-            # error
-            print("error")
+            self.appendToOutput("Please provide a correct url")
             return
 
-        print("valid")
+        response = Requester.sendRequest(url)
+        state = response[0]
+        message = response[1]
+
+        self.appendToOutput(message)
+
+        if not state == "ok":
+            return
+
+    def clearOutput(self):
+        self.outputText.delete(1.0, END)
+
+    def showDateTimeInOutput(self):
+        self.appendToOutput(str(datetime.now().strftime("%d %B %Y, %H:%M:%S")))
+
+    def appendToOutput(self, text):
+        self.outputText.insert(INSERT, text + "\n")
+        pass
 
 
 root = Tk()

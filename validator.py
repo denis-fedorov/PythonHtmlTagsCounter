@@ -5,6 +5,9 @@ regex = re.compile(urlPattern)
 
 
 class Validator:
+    """
+    A class for an URL address validation
+    """
     @staticmethod
     def isurlcorrect(url):
         return re.match(regex, url)
