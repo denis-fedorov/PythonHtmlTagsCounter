@@ -1,4 +1,5 @@
 import requests
+from keyValuePair import KeyValuePair
 
 
 class Requester:
@@ -10,6 +11,8 @@ class Requester:
     def sendRequest(url):
         try:
             response = requests.get(url)
-            return ("ok", response.text)
+            return KeyValuePair("ok", response.text)
+        except requests.exceptions.ConnectionError as exp:
+            return KeyValuePair("", "Invalid URL")
         except Exception as exp:
-            return ("", str(exp))
+            return KeyValuePair("", str(exp))

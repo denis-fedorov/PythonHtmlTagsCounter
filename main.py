@@ -1,8 +1,10 @@
 from tkinter import *
 from tkinter.scrolledtext import ScrolledText
+from datetime import datetime
+
 from validator import Validator
 from requester import Requester
-from datetime import datetime
+from tagCounter import TagCounter
 
 
 class Gui:
@@ -44,13 +46,15 @@ class Gui:
             return
 
         response = Requester.sendRequest(url)
-        state = response[0]
-        message = response[1]
-
-        self.appendToOutput(message)
+        state = response.key
+        source = response.value
 
         if not state == "ok":
+            self.appendToOutput(source)
             return
+
+        result = TagCounter.getTags(source)
+        self.printResult(result)
 
     def clearOutput(self):
         self.outputText.delete(1.0, END)
@@ -60,7 +64,12 @@ class Gui:
 
     def appendToOutput(self, text):
         self.outputText.insert(INSERT, text + "\n")
-        pass
+
+    def printResult(self, dic):
+        self.appendToOutput("We have found {} tags:\n".format(len(dic)))
+        for tag, count in dic.items():
+            self.appendToOutput("Tag: {}, count: {}".format(tag, count))
+        self.appendToOutput("==========================================")
 
 
 root = Tk()
