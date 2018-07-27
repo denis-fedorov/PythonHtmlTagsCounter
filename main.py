@@ -9,6 +9,8 @@ from tagCounter import TagCounter
 
 class Gui:
     def __init__(self, master):
+        self.separator = "========================"
+
         # common settings
         self.master = master
         self.master.title("HTML-tags ultimate counter")
@@ -37,39 +39,40 @@ class Gui:
         self.outputText.pack(side=TOP, expand=True, fill=BOTH)
 
     def run(self):
-        self.clearOutput()
-        self.showDateTimeInOutput()
+        self.clear_output()
+        self.append_datetime_to_output()
 
         url = self.entryUrl.get()
         if not Validator.isurlcorrect(url):
-            self.appendToOutput("Please provide a correct url")
+            self.append_text_to_output("Please provide a correct url")
             return
 
-        response = Requester.sendRequest(url)
+        response = Requester.send_request(url)
         state = response.key
         source = response.value
 
         if not state == "ok":
-            self.appendToOutput(source)
+            self.append_text_to_output(source)
             return
 
-        result = TagCounter.getTags(source)
-        self.printResult(result)
+        result = TagCounter.get_tags(source)
+        self.append_dic_to_output(result)
 
-    def clearOutput(self):
+    def clear_output(self):
         self.outputText.delete(1.0, END)
 
-    def showDateTimeInOutput(self):
-        self.appendToOutput(str(datetime.now().strftime("%d %B %Y, %H:%M:%S")))
+    def append_datetime_to_output(self):
+        self.append_text_to_output(str(datetime.now().strftime("%d %B %Y, %H:%M:%S")))
 
-    def appendToOutput(self, text):
+    def append_text_to_output(self, text):
         self.outputText.insert(INSERT, text + "\n")
 
-    def printResult(self, dic):
-        self.appendToOutput("We have found {} tags:\n".format(len(dic)))
+    def append_dic_to_output(self, dic):
+        self.append_text_to_output(self.separator)
+        self.append_text_to_output("We have found {} tags:\n".format(len(dic)))
         for tag, count in dic.items():
-            self.appendToOutput("Tag: {}, count: {}".format(tag, count))
-        self.appendToOutput("==========================================")
+            self.append_text_to_output("Tag: {}, count: {}".format(tag, count))
+        self.append_text_to_output(self.separator)
 
 
 root = Tk()

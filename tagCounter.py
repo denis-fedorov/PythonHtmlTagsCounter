@@ -6,10 +6,9 @@ class TagCounter:
     """
     A class for html-tags counting
     """
-
     @staticmethod
-    def getTags(rawHtml):
-        source = str(rawHtml).lower()
+    def get_tags(raw_html):
+        source = str(raw_html).lower()
         soup = BeautifulSoup(source, "html.parser")
         result = {}
 

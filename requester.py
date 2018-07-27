@@ -6,13 +6,12 @@ class Requester:
     """
     A class for sending http-requests
     """
-
     @staticmethod
-    def sendRequest(url):
+    def send_request(url):
         try:
             response = requests.get(url)
             return KeyValuePair("ok", response.text)
-        except requests.exceptions.ConnectionError as exp:
+        except requests.exceptions.ConnectionError:
             return KeyValuePair("", "Invalid URL")
         except Exception as exp:
             return KeyValuePair("", str(exp))
