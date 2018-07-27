@@ -1,5 +1,5 @@
 import requests
-from keyValuePair import KeyValuePair
+from utils.keyValuePair import KeyValuePair
 
 
 class Requester:

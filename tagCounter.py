@@ -1,4 +1,4 @@
-from allHtmlTags import tagsList
+from utils.allHtmlTags import tagsList
 from bs4 import BeautifulSoup
 
 
