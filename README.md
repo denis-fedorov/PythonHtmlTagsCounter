@@ -1,3 +1,3 @@
 # PythonHtmlTagsCounter
 
-Please loot ad requirements.txt file to get a list of using external libraries
+Please look at requirements.txt file to get a list of using external libraries
