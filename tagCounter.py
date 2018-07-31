@@ -1,4 +1,4 @@
-from utils.allHtmlTags import tagsList
+from utils.allHtmlTags import tags_list
 from bs4 import BeautifulSoup
 
 
@@ -12,7 +12,7 @@ class TagCounter:
         soup = BeautifulSoup(source, "html.parser")
         result = {}
 
-        for tag in tagsList:
+        for tag in tags_list:
             count = len(soup.find_all(tag))
             if count > 0:
                 result[tag] = count

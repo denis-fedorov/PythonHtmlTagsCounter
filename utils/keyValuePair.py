@@ -1,3 +1,3 @@
 from collections import namedtuple
 
-KeyValuePair = namedtuple('KeyValuePair', ['key', 'value'])
+key_value_pair = namedtuple('KeyValuePair', ['key', 'value'])
