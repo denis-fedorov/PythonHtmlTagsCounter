@@ -11,11 +11,12 @@ from dbWrapper import DbWrapper
 class Gui:
     def __init__(self, master):
         self.separator = "========================"
+        self.db_wrapper = DbWrapper()
 
         # 1. common settings
         self.master = master
         self.master.title("HTML-tags ultimate counter")
-        self.master.geometry("500x300")
+        self.master.geometry("500x500")
 
         # 2. frames
         self.upper_frame = Frame(self.master)
@@ -32,7 +33,7 @@ class Gui:
         self.output_text = ScrolledText(self.output_frame, wrap=WORD)
         # 3.3 bottom frame
         self.save_to_db_button = Button(self.bottom_frame, text="Save to DB", justify=LEFT, command=self.save_to_db)
-        self.load_from_db_button = Button(self.bottom_frame, text="Load from DB", justify=LEFT,
+        self.load_from_db_button = Button(self.bottom_frame, text="Load the last record from DB", justify=LEFT,
                                           command=self.load_from_db)
         self.exit_button = Button(self.bottom_frame, text="Exit", justify=RIGHT, command=self.exit)
 
@@ -78,10 +79,14 @@ class Gui:
 
     def save_to_db(self):
         text_to_save = self.output_text.get("1.0", END)
+        if not text_to_save.strip():
+            self.append_text_to_output("Nothing to save - the result is empty")
+            return
+
         time_stamp = datetime.now()
 
         try:
-            DbWrapper.save(text_to_save, time_stamp)
+            self.db_wrapper.save(time_stamp, text_to_save)
         except:
             self.append_text_to_output("Can't save the result into db")
             return
@@ -92,12 +97,15 @@ class Gui:
     def load_from_db(self):
         self.clear_output()
         try:
-            text = DbWrapper.load_last_record()
+            text = self.db_wrapper.load_last_record()
         except:
             self.append_text_to_output("Can't load the result from db")
             return
 
-        self.append_text_to_output("The result was loaded from DB:\n{}".format(text))
+        if not text:
+            self.append_text_to_output("DB is empty")
+        else:
+            self.append_text_to_output("The result was loaded from DB:\n{}".format(text))
 
     def clear_output(self):
         self.output_text.delete(1.0, END)
