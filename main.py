@@ -5,6 +5,7 @@ from datetime import datetime
 from validator import Validator
 from requester import Requester
 from tagCounter import TagCounter
+from dbWrapper import DbWrapper
 
 
 class Gui:
@@ -29,9 +30,10 @@ class Gui:
         self.run_button = Button(self.upper_frame, text="Run", command=self.run)
         # 3.2 output frame
         self.output_text = ScrolledText(self.output_frame, wrap=WORD)
-        # 3.3 buttom frame
+        # 3.3 bottom frame
         self.save_to_db_button = Button(self.bottom_frame, text="Save to DB", justify=LEFT, command=self.save_to_db)
-        self.load_from_db_button = Button(self.bottom_frame, text="Load from DB", justify=LEFT, command=self.load_from_db)
+        self.load_from_db_button = Button(self.bottom_frame, text="Load from DB", justify=LEFT,
+                                          command=self.load_from_db)
         self.exit_button = Button(self.bottom_frame, text="Exit", justify=RIGHT, command=self.exit)
 
         # 4. frames layout
@@ -75,12 +77,27 @@ class Gui:
         self.master.destroy()
 
     def save_to_db(self):
-        print("Save to db in progress")
-        pass
+        text_to_save = self.output_text.get("1.0", END)
+        time_stamp = datetime.now()
+
+        try:
+            DbWrapper.save(text_to_save, time_stamp)
+        except:
+            self.append_text_to_output("Can't save the result into db")
+            return
+
+        self.clear_output()
+        self.append_text_to_output("The result was saved into DB")
 
     def load_from_db(self):
-        print("Load from db in progress")
-        pass
+        self.clear_output()
+        try:
+            text = DbWrapper.load_last_record()
+        except:
+            self.append_text_to_output("Can't load the result from db")
+            return
+
+        self.append_text_to_output("The result was loaded from DB:\n{}".format(text))
 
     def clear_output(self):
         self.output_text.delete(1.0, END)
